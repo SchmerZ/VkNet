@@ -22,7 +22,7 @@
                   SelectionUnit="FullRow"
                   CanUserDeleteRows="False" CanUserAddRows="False" 
                   AutoGenerateColumns="False">
-            
+
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Width="30" Binding="{Binding IsSelected}">
                     <DataGridCheckBoxColumn.CellStyle>
@@ -33,12 +33,14 @@
                 </DataGridCheckBoxColumn>
 
                 <DataGridTextColumn Header="Id" Binding="{Binding Audio.Id}" IsReadOnly="True"/>
-                <DataGridTextColumn Header="Artist" Binding="{Binding Audio.Artist}" IsReadOnly="True" />
-                <DataGridTextColumn Header="Title" Binding="{Binding Audio.Title}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Artist" Binding="{Binding Audio.Artist}" />
+                <DataGridTextColumn Header="Title" Binding="{Binding Audio.Title}" />
                 <DataGridTemplateColumn Width="150*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ProgressBar HorizontalAlignment="Stretch" Minimum="0" Maximum="100" Value="{Binding PercentageDownloadComplete}" />
+                            <ProgressBar HorizontalAlignment="Stretch" Minimum="0" Maximum="100" 
+                                         Value="{Binding PercentageDownloadComplete}"
+                                         Tag="{Binding ProgressTag}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

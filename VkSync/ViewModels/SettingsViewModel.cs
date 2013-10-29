@@ -1,4 +1,6 @@
-﻿using VkSync.Models;
+﻿using System.Windows.Input;
+using VkSync.Commands;
+using VkSync.Models;
 using VkSync.Helpers;
 
 namespace VkSync.ViewModels
@@ -7,18 +9,17 @@ namespace VkSync.ViewModels
     {
         #region Fields
 
-		private string _newPassword;
+        private string _confirmPassword;
 
 		#endregion
 		
 		#region Constructors
 
-        public SettingsViewModel(Settings settings)
-		{
-			Settings = settings;
-
-			NewPassword = Settings.Password;
-		}
+        public SettingsViewModel()
+        {
+            Settings = VkSyncContext.Settings;
+            ConfirmPassword = Settings.Password;
+        }
 
 		#endregion
 
@@ -74,24 +75,24 @@ namespace VkSync.ViewModels
 
 				OnPropertyChanged("Password");
 
-				NewPassword = null;
+                ConfirmPassword = null;
 			}
 		}
 
-		public string NewPassword
+        public string ConfirmPassword
 		{
 			get
 			{
-			    return _newPassword;
+                return _confirmPassword;
 			}
 			set
 			{
-                _newPassword = value;
+                _confirmPassword = value;
 
-				ValidationHandler.ValidateRule("NewPassword", "Confirmation password is incorrect",
+                ValidationHandler.ValidateRule("ConfirmPassword", "Confirmation password is incorrect",
 				                               () => string.CompareOrdinal(Password, value) == 0);
 
-				OnPropertyChanged("NewPassword");
+                OnPropertyChanged("ConfirmPassword");
 			}
 		}
 
@@ -126,5 +127,22 @@ namespace VkSync.ViewModels
         }
 
 		#endregion
+
+        #region Commands
+
+        public ICommand CancelCommand
+        {
+            get
+            {
+                return new RelyCommand(OnCancelCommand);
+            }
+        }
+
+        private void OnCancelCommand()
+        {
+            
+        }
+
+        #endregion
     }
 }

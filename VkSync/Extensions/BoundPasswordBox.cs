@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-namespace VkSync
+namespace VkSync.Extensions
 {
 	/// <summary>
 	/// This class adds binding capabilities to the standard WPF PasswordBox.

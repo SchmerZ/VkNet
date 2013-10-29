@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:local="clr-namespace:VkSync"
+             xmlns:extensions="clr-namespace:VkSync.Extensions"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <StackPanel Margin="4">
@@ -11,14 +12,14 @@
 
         <TextBlock Text="Login email:" Margin="0,4,0,0" />
         <TextBox Name="txtLogin" Text="{Binding Path=Login, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, NotifyOnSourceUpdated=True, ValidatesOnDataErrors=True}" />
-
+        
         <TextBlock Text="Password:" Margin="0,4,0,0" />
         <PasswordBox Name="txtPassword" 
-                     local:BoundPasswordBox.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                     extensions:BoundPasswordBox.BoundPassword="{Binding Path=Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
 
         <TextBlock Text="Confirm Password:" Margin="0,4,0,0" />
         <PasswordBox Name="txtConfirmPassword" 
-                     local:BoundPasswordBox.BoundPassword="{Binding Path=NewPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
+                     extensions:BoundPasswordBox.BoundPassword="{Binding Path=ConfirmPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnExceptions=True, ValidatesOnDataErrors=True, NotifyOnValidationError=True}" />
 
         <TextBlock Text="Concurrent Download Threads Count:" Margin="0,4,0,0" />
         <TextBox Name="txtConcurrentDownloadThreadsCount" MaxLength="2"
@@ -47,7 +48,8 @@
             </Grid.ColumnDefinitions>
             
             <Button Name="btnSave" Grid.Column="0" Content="Save" HorizontalAlignment="Stretch" />
-            <Button Name="btnCancel" Grid.Column="2" Content="Cancel" HorizontalAlignment="Stretch" />
+            <Button Name="btnCancel" Grid.Column="2" Content="Cancel" HorizontalAlignment="Stretch"
+                    Command="{Binding CancelCommand}"/>
         </Grid>
     </StackPanel>
 </UserControl>
