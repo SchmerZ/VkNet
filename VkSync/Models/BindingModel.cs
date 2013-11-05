@@ -23,6 +23,16 @@ namespace VkSync.Models
             }
         }
 
+        protected bool IsValid
+        {
+            get { return ValidationHandler.IsValid; }
+        }
+
+        public void AddBrokenRuleMessage(string property, string message)
+        {
+            ValidationHandler.ValidateRule(property, message, () => false);
+        }
+
         #endregion
 
         #region Implementation of INotifyPropertyChanged

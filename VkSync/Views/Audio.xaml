@@ -8,20 +8,23 @@
     <DockPanel >
         <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="5" />
-                <ColumnDefinition Width="50*" />
+                <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Button Name="btnGetData" Grid.Column="0" Content="Get Data" HorizontalAlignment="Stretch" />
-            <Button Name="btnSync" Grid.Column="2" Content="Sync" HorizontalAlignment="Stretch" />
+            <Button Grid.Column="0" Content="Get Data" HorizontalAlignment="Stretch"
+                    Command="{Binding GetAudioDataCommand}" />
+            <Button Grid.Column="2" Content="Sync" HorizontalAlignment="Stretch"
+                    Command="{Binding SyncAudioDataCommand}" />
         </Grid>
 
-        <DataGrid x:Name="dgAudio" DockPanel.Dock="Top"
+        <DataGrid DockPanel.Dock="Top"
                   AllowDrop="False" 
                   SelectionUnit="FullRow"
                   CanUserDeleteRows="False" CanUserAddRows="False" 
-                  AutoGenerateColumns="False">
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding AudioData}">
 
             <DataGrid.Columns>
                 <DataGridCheckBoxColumn Width="30" Binding="{Binding IsSelected}">

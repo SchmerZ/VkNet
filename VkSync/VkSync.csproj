@@ -23,6 +23,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,8 +69,9 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Serializers\SettingsSerializer.cs" />
     <Compile Include="Tasks\LimitedConcurrencyLevelTaskScheduler.cs" />
+    <Compile Include="Validation\RangeValidationRule.cs" />
     <Compile Include="Validation\ValidationHandler.cs" />
-    <Compile Include="ViewModels\AudioItemViewModel.cs" />
+    <Compile Include="ViewModels\AudioDataItemViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\AudioViewModel.cs" />

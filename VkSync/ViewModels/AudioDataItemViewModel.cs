@@ -3,9 +3,9 @@ using VkToolkit.Model;
 
 namespace VkSync.ViewModels
 {
-    public class AudioItemViewModel : BindingModel
+    public class AudioDataItemViewModel : BindingModel
     {
-        public AudioItemViewModel(Audio audio)
+        public AudioDataItemViewModel(Audio audio)
         {
             Audio = audio;
         }

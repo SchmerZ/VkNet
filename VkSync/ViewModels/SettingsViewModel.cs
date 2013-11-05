@@ -1,7 +1,12 @@
-﻿using System.Windows.Input;
+﻿using System.Windows.Forms;
+using System.Windows.Input;
+
 using VkSync.Commands;
 using VkSync.Models;
 using VkSync.Helpers;
+using VkSync.Serializers;
+using VkToolkit;
+using MessageBox = System.Windows.MessageBox;
 
 namespace VkSync.ViewModels
 {
@@ -11,9 +16,9 @@ namespace VkSync.ViewModels
 
         private string _confirmPassword;
 
-		#endregion
-		
-		#region Constructors
+        #endregion
+
+        #region Constructors
 
         public SettingsViewModel()
         {
@@ -21,15 +26,15 @@ namespace VkSync.ViewModels
             ConfirmPassword = Settings.Password;
         }
 
-		#endregion
+        #endregion
 
-		#region Properties
+        #region Properties
 
-		public Settings Settings
-		{
-			get; 
-			private set;
-		}
+        public Settings Settings
+        {
+            get;
+            private set;
+        }
 
         public int AppId
         {
@@ -48,66 +53,66 @@ namespace VkSync.ViewModels
         }
 
         public string Login
-		{
-			get
-			{
-				return Settings.Login;
-			}
-			set
-			{
+        {
+            get
+            {
+                return Settings.Login;
+            }
+            set
+            {
                 Settings.Login = value;
 
-				ValidationHandler.ValidateRule("Login", "Incorrect email address", value.IsValidEmail);
+                ValidationHandler.ValidateRule("Login", "Incorrect email address", value.IsValidEmail);
 
-				OnPropertyChanged("Login");
-			}
-		}
+                OnPropertyChanged("Login");
+            }
+        }
 
-		public string Password
-		{
-			get
-			{
-				return Settings.Password;
-			}
-			set
-			{
-				Settings.Password = value;
+        public string Password
+        {
+            get
+            {
+                return Settings.Password;
+            }
+            set
+            {
+                Settings.Password = value;
 
-				OnPropertyChanged("Password");
+                OnPropertyChanged("Password");
 
                 ConfirmPassword = null;
-			}
-		}
+            }
+        }
 
         public string ConfirmPassword
-		{
-			get
-			{
+        {
+            get
+            {
                 return _confirmPassword;
-			}
-			set
-			{
+            }
+            set
+            {
                 _confirmPassword = value;
 
                 ValidationHandler.ValidateRule("ConfirmPassword", "Confirmation password is incorrect",
-				                               () => string.CompareOrdinal(Password, value) == 0);
+                                               () => string.CompareOrdinal(Password, value) == 0);
 
                 OnPropertyChanged("ConfirmPassword");
-			}
-		}
+            }
+        }
 
         public string DataFolderPath
-		{
-			get
-			{
-				return Settings.DataFolderPath;
-			}
-			set
-			{
+        {
+            get
+            {
+                return Settings.DataFolderPath;
+            }
+            set
+            {
                 Settings.DataFolderPath = value;
-				OnPropertyChanged("DataFilePath");
-			}
-		}
+                OnPropertyChanged("DataFilePath");
+            }
+        }
 
         public int ConcurrentDownloadThreadsCount
         {
@@ -126,7 +131,7 @@ namespace VkSync.ViewModels
             }
         }
 
-		#endregion
+        #endregion
 
         #region Commands
 
@@ -140,7 +145,60 @@ namespace VkSync.ViewModels
 
         private void OnCancelCommand()
         {
-            
+
+        }
+
+        public ICommand SaveCommand
+        {
+            get { return new RelyCommand(OnSaveCommand, () => IsValid); }
+        }
+
+        private void OnSaveCommand()
+        {
+            SettingsSerializer.Serialize(Settings);
+        }
+
+        public ICommand TestAuthorizationCommand
+        {
+            get
+            {
+                return new RelyCommand(OnTestAuthorizationCommand, () => IsValid);
+            }
+        }
+
+        private void OnTestAuthorizationCommand()
+        {
+            var isValid = false;
+
+            try
+            {
+                var api = new VkApi();
+                api.Authorize(AppId, Login, Password, VkToolkit.Enums.Settings.Audio);
+                isValid = !string.IsNullOrEmpty(api.AccessToken);
+            }
+            catch
+            {
+            }
+
+            MessageBox.Show(isValid ? "OK" : "Failed");
+        }
+
+        public ICommand SelectDataFolderCommand
+        {
+            get
+            {
+                return new RelyCommand(OnSelectDataFolderCommand);
+            }
+        }
+
+        private void OnSelectDataFolderCommand()
+        {
+            var openFolderDialog = new FolderBrowserDialog();
+
+            var result = openFolderDialog.ShowDialog();
+
+            if (result == DialogResult.OK)
+                DataFolderPath = openFolderDialog.SelectedPath;
         }
 
         #endregion
