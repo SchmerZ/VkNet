@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -61,11 +60,11 @@ namespace VkSync.ViewModels
 
             task.ContinueWith(t =>
                 {
+                    GetAudioDataInProgress = false;
+
                     AudioData =
                         new ObservableCollection<AudioDataItemViewModel>(
                             t.Result.Select(o => new AudioDataItemViewModel(o)));
-
-                    GetAudioDataInProgress = false;
                 });
         }
 

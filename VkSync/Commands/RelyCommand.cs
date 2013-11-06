@@ -1,47 +1,113 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Input;
 
 namespace VkSync.Commands
 {
     public class RelyCommand : ICommand
     {
-        readonly Action _action;
-        readonly Func<bool> _canExecute;
+        private readonly Action _executeMethod;
+        private readonly Func<bool> _canExecuteMethod;
+        private List<WeakReference> _canExecuteChangedHandlers;
 
         #region Ctors
-        
-        public RelyCommand(Action action)
-            : this(action, null)
+
+        public RelyCommand(Action executeMethod)
+            : this(executeMethod, null)
         { }
 
-        public RelyCommand(Action action, Func<bool> canExecute)
+        public RelyCommand(Action executeMethod, Func<bool> canExecuteMethod)
         {
-            if (action == null)
-                throw new ArgumentNullException("action");
+            if (executeMethod == null)
+                throw new ArgumentNullException("executeMethod");
 
-            _action = action;
-            _canExecute = canExecute;
+            _executeMethod = executeMethod;
+            _canExecuteMethod = canExecuteMethod;
         } 
 
         #endregion
 
-        public bool CanExecute(object parameter)
+        #region Public Events
+
+        /// <summary>
+        /// Occurs when changes occur that affect whether or not the command should execute.
+        /// </summary>
+        public event EventHandler CanExecuteChanged
         {
-            if (_canExecute != null)
-                return _canExecute();
+            add
+            {
+                CommandManagerHelper.AddWeakReferenceHandler(ref _canExecuteChangedHandlers, value);
+            }
+            remove
+            {
+                CommandManagerHelper.RemoveWeakReferenceHandler(_canExecuteChangedHandlers, value);
+            }
+        }
+
+        #endregion
+
+        #region ICommand Members
+
+        /// <summary>
+        /// Defines the method that determines whether the command can execute in its current state.
+        /// </summary>
+        /// <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+        /// <returns><c>true</c> if this command can be executed; otherwise, <c>false</c>.</returns>
+        bool ICommand.CanExecute(object parameter)
+        {
+            return CanExecute();
+        }
+
+        /// <summary>
+        /// Defines the method to be called when the command is invoked.
+        /// </summary>
+        /// <param name="parameter">Data used by the command.  If the command does not require data to be passed, this object can be set to null.</param>
+        void ICommand.Execute(object parameter)
+        {
+            Execute();
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        /// <summary>
+        /// Method to determine if the command can be executed.
+        /// </summary>
+        /// <returns><c>true</c> if this instance can execute; otherwise, <c>false</c>.</returns>
+        private bool CanExecute()
+        {
+            if (_canExecuteMethod != null)
+                return _canExecuteMethod();
 
             return true;
         }
 
-        public void Execute(object parameter)
+        /// <summary>
+        /// Executes this instance.
+        /// </summary>
+        private void Execute()
         {
-            _action();
+            if (_executeMethod != null)
+                _executeMethod();
         }
 
-        public event EventHandler CanExecuteChanged
+        /// <summary>
+        /// Raises the CanExecuteChaged event
+        /// </summary>
+        public void RaiseCanExecuteChanged()
         {
-            add { CommandManager.RequerySuggested += value; }
-            remove { CommandManager.RequerySuggested -= value; }
+            OnCanExecuteChanged();
         }
+
+        /// <summary>
+        /// Protected virtual method to raise CanExecuteChanged event
+        /// </summary>
+        protected virtual void OnCanExecuteChanged()
+        {
+            CommandManagerHelper.CallWeakReferenceHandlers(_canExecuteChangedHandlers);
+        }
+
+        #endregion
     }
 }
