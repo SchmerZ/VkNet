@@ -15,7 +15,7 @@ using VkToolkit.Utils;
 
 namespace VkSync.ViewModels
 {
-    public class AudioViewModel : BindingModel
+    public class AudioViewModel : MediatorViewModel
     {
         #region Properties
 
@@ -54,6 +54,8 @@ namespace VkSync.ViewModels
 
         private void OnGetAudioDataCommand()
         {
+            Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Start getting audio data..."));
+
             GetAudioDataInProgress = true;
 
             var task = Task.Factory.StartNew(() => GetAudio());
@@ -61,6 +63,8 @@ namespace VkSync.ViewModels
             task.ContinueWith(t =>
                 {
                     GetAudioDataInProgress = false;
+
+                    Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Successed"));
 
                     AudioData =
                         new ObservableCollection<AudioDataItemViewModel>(
@@ -73,7 +77,12 @@ namespace VkSync.ViewModels
             var settings = VkSyncContext.Settings;
 
             var api = new VkApi();
+
+            Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Authorization..."));
+
             api.Authorize(settings.AppId, settings.Login, settings.Password, VkToolkit.Enums.Settings.Audio);
+
+            Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Get audio data..."));
 
             var audio = api.Audio.Get(api.UserId);
 

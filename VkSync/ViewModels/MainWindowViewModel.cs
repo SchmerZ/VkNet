@@ -2,12 +2,13 @@
 using System.Windows.Input;
 
 using VkSync.Commands;
+using VkSync.Helpers;
 using VkSync.Models;
 using VkSync.ViewModels.Tabs;
 
 namespace VkSync.ViewModels
 {
-    public class MainWindowViewModel : BindingModel
+    public class MainWindowViewModel : MediatorViewModel
     {
         #region Fields
 
@@ -24,6 +25,16 @@ namespace VkSync.ViewModels
 
         public MainWindowViewModel()
         {
+            Mediator.Register(ViewModelMessageType.Notification, (args) =>
+                {
+                    var pair = (Pair<string, string>) args;
+                    
+                    PanelLoading = true;
+
+                    PanelMainMessage = pair.First;
+                    PanelSubMessage = pair.Second;
+                });
+
             Tabs = new ObservableCollection<TabViewModelItem>
                 {
                     new TabViewModelItem {TabName = "Audio", TabContents = new AudioViewModel()},

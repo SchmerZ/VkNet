@@ -10,7 +10,7 @@ using MessageBox = System.Windows.MessageBox;
 
 namespace VkSync.ViewModels
 {
-    public class SettingsViewModel : BindingModel
+    public class SettingsViewModel : MediatorViewModel
     {
         #region Fields
 

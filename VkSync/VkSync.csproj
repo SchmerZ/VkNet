@@ -70,11 +70,15 @@
     <Compile Include="Extensions\BoundPasswordBox.cs" />
     <Compile Include="Helpers\CryptoHelper.cs" />
     <Compile Include="Helpers\Extensions.cs" />
+    <Compile Include="Helpers\Pair.cs" />
     <Compile Include="Helpers\VisualTreeHelpers.cs" />
     <Compile Include="Helpers\VkSyncContext.cs" />
     <Compile Include="Helpers\WMIHelper.cs" />
+    <Compile Include="Mediators\Mediator.cs" />
     <Compile Include="Models\BindingModel.cs" />
+    <Compile Include="Models\MediatorViewModel.cs" />
     <Compile Include="Models\Settings.cs" />
+    <Compile Include="Models\ViewModelMessageType.cs" />
     <Compile Include="Serializers\SettingsSerializer.cs" />
     <Compile Include="Tasks\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="Validation\RangeValidationRule.cs" />
