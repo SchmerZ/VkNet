@@ -4,12 +4,12 @@ namespace VkSync.Models
 {
     public class MediatorViewModel : BindingModel
     {
-        public Mediator<ViewModelMessageType> Mediator
+        protected Mediator<ViewModelMessageType> Mediator
         {
             get
             {
                 return Mediator<ViewModelMessageType>.Instance;
             }
-        } 
+        }
     }
 }

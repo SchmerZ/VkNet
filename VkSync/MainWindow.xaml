@@ -12,7 +12,9 @@
     </Window.DataContext>
 
     <Grid>
-        <TabControl HorizontalAlignment="Stretch" SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Tabs}">
+        <TabControl HorizontalAlignment="Stretch" 
+                    SelectedIndex="{Binding SelectedIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    ItemsSource="{Binding Tabs}">
             <TabControl.Resources>
                 <DataTemplate DataType="{x:Type viewModels:AudioViewModel}">
                     <views:Audio />
@@ -40,10 +42,13 @@
         </TabControl>
 
         <Grid VerticalAlignment="Bottom" Opacity="0.8">
-            <Controls:LoadingPanel IsLoading="{Binding PanelLoading}"
+            <Controls:LoadingPanel 
+                        IsLoading="False"
+                        IsSpinning="{Binding IsSpinning}"
                         Message="{Binding PanelMainMessage}"
                         SubMessage="{Binding PanelSubMessage}" 
-                        ClosePanelCommand="{Binding PanelCloseCommand}" />
+                        ClosePanelCommand="{Binding PanelCloseCommand}"
+                />
         </Grid>
     </Grid>
 </Window>

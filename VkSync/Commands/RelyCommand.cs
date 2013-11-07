@@ -29,6 +29,18 @@ namespace VkSync.Commands
 
         #region Public Events
 
+        //public event EventHandler CanExecuteChanged
+        //{
+        //    add
+        //    {
+        //        CommandManager.RequerySuggested += value;
+        //    }
+        //    remove
+        //    {
+        //        CommandManager.RequerySuggested -= value;
+        //    }
+        //}
+
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>

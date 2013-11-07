@@ -36,7 +36,7 @@ namespace VkSync.ViewModels
 
         private bool GetAudioDataInProgress
         {
-            get; 
+            get;
             set;
         }
 
@@ -54,22 +54,33 @@ namespace VkSync.ViewModels
 
         private void OnGetAudioDataCommand()
         {
-            Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Start getting audio data..."));
+            Mediator.Notify(ViewModelMessageType.Working, true);
+            Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Downloading...", "Start getting audio data..."));
 
             GetAudioDataInProgress = true;
 
-            var task = Task.Factory.StartNew(() => GetAudio());
+            var getAudioTask = Task.Factory.StartNew(() => GetAudio());
 
-            task.ContinueWith(t =>
+            getAudioTask.ContinueWith((t) =>
+            {
+                GetAudioDataInProgress = false;
+            });
+
+            var downloadTask = getAudioTask.ContinueWith(t =>
+            {
+                Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Downloading...", "Successed"));
+
+                AudioData = new ObservableCollection<AudioDataItemViewModel>(t.Result.Select(o => new AudioDataItemViewModel(o)));
+            }, TaskContinuationOptions.NotOnFaulted);
+
+            Task.WhenAll(new[] { getAudioTask, downloadTask })
+                .ContinueWith((t) =>
                 {
-                    GetAudioDataInProgress = false;
+                    Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Error", t.Exception.InnerException.Message));
+                }, TaskContinuationOptions.OnlyOnFaulted);
 
-                    Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Successed"));
-
-                    AudioData =
-                        new ObservableCollection<AudioDataItemViewModel>(
-                            t.Result.Select(o => new AudioDataItemViewModel(o)));
-                });
+            Task.WhenAll(new[] { getAudioTask, downloadTask })
+                .ContinueWith((t) => Mediator.Notify(ViewModelMessageType.Working, false));
         }
 
         private IEnumerable<VkToolkit.Model.Audio> GetAudio()
@@ -78,11 +89,11 @@ namespace VkSync.ViewModels
 
             var api = new VkApi();
 
-            Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Authorization..."));
+            Mediator.Notify(ViewModelMessageType.Notification, "Authorization...");
 
             api.Authorize(settings.AppId, settings.Login, settings.Password, VkToolkit.Enums.Settings.Audio);
 
-            Mediator.Notify(ViewModelMessageType.Notification, new Pair<string, string>("Loading...", "Get audio data..."));
+            Mediator.Notify(ViewModelMessageType.Notification, "Get audio data...");
 
             var audio = api.Audio.Get(api.UserId);
 
@@ -125,7 +136,7 @@ namespace VkSync.ViewModels
         private void Download(object state)
         {
             var model = (AudioDataItemViewModel)state;
-            
+
             var folder = Path.Combine(VkSyncContext.Settings.DataFolderPath, "vk_music");
 
             if (!Directory.Exists(folder))

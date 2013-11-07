@@ -4,9 +4,7 @@ using System.Windows.Input;
 using VkSync.Commands;
 using VkSync.Models;
 using VkSync.Helpers;
-using VkSync.Serializers;
 using VkToolkit;
-using MessageBox = System.Windows.MessageBox;
 
 namespace VkSync.ViewModels
 {
@@ -30,10 +28,10 @@ namespace VkSync.ViewModels
 
         #region Properties
 
-        public Settings Settings
+        private Settings Settings
         {
-            get;
-            private set;
+            get; 
+            set;
         }
 
         public int AppId
@@ -145,7 +143,7 @@ namespace VkSync.ViewModels
 
         private void OnCancelCommand()
         {
-
+            Mediator.Notify(ViewModelMessageType.Navigation, "Audio");
         }
 
         public ICommand SaveCommand
@@ -155,7 +153,7 @@ namespace VkSync.ViewModels
 
         private void OnSaveCommand()
         {
-            SettingsSerializer.Serialize(Settings);
+            VkSyncContext.SettingsSerializer.Serialize(Settings);
         }
 
         public ICommand TestAuthorizationCommand
@@ -168,19 +166,17 @@ namespace VkSync.ViewModels
 
         private void OnTestAuthorizationCommand()
         {
-            var isValid = false;
+            //var isValid = false;
 
-            try
-            {
-                var api = new VkApi();
-                api.Authorize(AppId, Login, Password, VkToolkit.Enums.Settings.Audio);
-                isValid = !string.IsNullOrEmpty(api.AccessToken);
-            }
-            catch
-            {
-            }
-
-            MessageBox.Show(isValid ? "OK" : "Failed");
+            //try
+            //{
+            //    var api = new VkApi();
+            //    api.Authorize(AppId, Login, Password, VkToolkit.Enums.Settings.Audio);
+            //    isValid = !string.IsNullOrEmpty(api.AccessToken);
+            //}
+            //catch
+            //{
+            //}
         }
 
         public ICommand SelectDataFolderCommand

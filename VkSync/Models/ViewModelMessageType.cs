@@ -3,6 +3,7 @@
     public enum ViewModelMessageType
     {
         Navigation = 0,
-        Notification = 1
+        Notification = 1,
+        Working = 2
     }
 }

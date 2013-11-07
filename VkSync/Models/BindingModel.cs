@@ -25,7 +25,10 @@ namespace VkSync.Models
 
         protected bool IsValid
         {
-            get { return ValidationHandler.IsValid; }
+            get
+            {
+                return ValidationHandler.IsValid;
+            }
         }
 
         public void AddBrokenRuleMessage(string property, string message)

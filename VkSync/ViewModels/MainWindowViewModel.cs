@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
 
 using VkSync.Commands;
@@ -16,6 +17,8 @@ namespace VkSync.ViewModels
         private int _selectedIndex;
 
         private bool _panelLoading;
+        private bool _isSpinning = true;
+
         private string _panelMainMessage = "Main Loading Message";
         private string _panelSubMessage = "Sub Loading Message";
 
@@ -26,14 +29,37 @@ namespace VkSync.ViewModels
         public MainWindowViewModel()
         {
             Mediator.Register(ViewModelMessageType.Notification, (args) =>
+            {
+                var pair = args as Pair<string, string>;
+
+                if (pair != null)
                 {
-                    var pair = (Pair<string, string>) args;
-                    
                     PanelLoading = true;
 
                     PanelMainMessage = pair.First;
                     PanelSubMessage = pair.Second;
-                });
+                }
+                else if (args is string)
+                {
+                    PanelLoading = true;
+
+                    PanelSubMessage = PanelMainMessage;
+                    PanelMainMessage = (string) args;
+                }
+            });
+
+            Mediator.Register(ViewModelMessageType.Navigation, (args) =>
+            {
+                var navigationName = (string) args;
+
+                var item = Tabs.SingleOrDefault((o) => o.TabName == navigationName);
+                SelectedIndex = Tabs.IndexOf(item);
+            });
+
+            Mediator.Register(ViewModelMessageType.Working, (args) =>
+            {
+                IsSpinning = (bool) args;
+            });
 
             Tabs = new ObservableCollection<TabViewModelItem>
                 {
@@ -82,6 +108,19 @@ namespace VkSync.ViewModels
             {
                 _panelLoading = value;
                 OnPropertyChanged("PanelLoading");
+            }
+        }
+
+        public bool IsSpinning
+        {
+            get
+            {
+                return _isSpinning;
+            }
+            set
+            {
+                _isSpinning = value;
+                OnPropertyChanged("IsSpinning");
             }
         }
 

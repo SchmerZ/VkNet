@@ -8,7 +8,7 @@ using VkSync.Models;
 
 namespace VkSync.Serializers
 {
-	public static class SettingsSerializer
+    public class SettingsSerializer : XmlSerializer
 	{
 		#region Fields
 
@@ -17,9 +17,16 @@ namespace VkSync.Serializers
 
 		#endregion
 
-		#region Properties
+        #region Ctors
 
-		private static string ProcessorId
+        public SettingsSerializer() : base (typeof(Settings))
+        { }
+
+        #endregion
+
+        #region Properties
+
+        private static string ProcessorId
 		{
 			get
 			{
@@ -32,48 +39,52 @@ namespace VkSync.Serializers
 
 		#endregion
 
-		public static void Serialize(Settings settings)
-		{
-			if (settings == null)
+        public void Serialize(Settings settings)
+        {
+            using(var xmlWriter = XmlWriter.Create(_settingsFilePath))
+            {
+                Serialize(xmlWriter, settings);
+            }
+        }
+
+        protected override void Serialize(object o, XmlSerializationWriter writer)
+        {
+            var settings = o as Settings;
+			
+            if (settings == null)
 				throw new ArgumentNullException("settings");
 
 			var settingsToSave = (Settings)settings.Clone();
-
 			settingsToSave.Password = CryptoHelper.Encrypt(settingsToSave.Password, ProcessorId, ProcessorId);
 
-			var xmlSerizlizer = new XmlSerializer(typeof(Settings));
-            var xmlWriter = XmlWriter.Create(_settingsFilePath);
-
-			xmlSerizlizer.Serialize(xmlWriter, settingsToSave);
-			xmlWriter.Close();
+            base.Serialize(settingsToSave, writer);
 		}
 
-		public static Settings Deserialize()
-		{
-			var settings = new Settings();
+        public Settings Deserialize()
+        {
+            var result = new Settings();
 
-			if (File.Exists(_settingsFilePath))
-			{
-				var serializer = new XmlSerializer(typeof(Settings));
-
+            if (File.Exists(_settingsFilePath))
+            {
                 using (var xmlReader = XmlReader.Create(_settingsFilePath))
-				{
-					if (serializer.CanDeserialize(xmlReader))
-						settings = (Settings)serializer.Deserialize(xmlReader);
-				}
+                {
+                    if (CanDeserialize(xmlReader))
+                        result = (Settings) Deserialize(xmlReader);
+                }
+            }
 
-				var decryptedPassword = CryptoHelper.Decrypt(settings.Password, ProcessorId, ProcessorId);
+            DeserializationPostProcess(result);
 
-				settings.Password = string.IsNullOrEmpty(decryptedPassword)
-										? null
-										: decryptedPassword;
-			}
-			else
-			{
-				settings.Login = null;
-			}
+            return result;
+        }
 
-			return settings;
-		}
+        private void DeserializationPostProcess(Settings settings)
+        {
+            var decryptedPassword = CryptoHelper.Decrypt(settings.Password, ProcessorId, ProcessorId);
+
+            settings.Password = string.IsNullOrEmpty(decryptedPassword)
+                                  ? null
+                                  : decryptedPassword;
+        }
 	}
 }
