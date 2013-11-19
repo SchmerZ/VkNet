@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 using VkSync.Commands;
@@ -166,17 +168,28 @@ namespace VkSync.ViewModels
 
         private void OnTestAuthorizationCommand()
         {
-            //var isValid = false;
+            var isValid = false;
 
-            //try
-            //{
-            //    var api = new VkApi();
-            //    api.Authorize(AppId, Login, Password, VkToolkit.Enums.Settings.Audio);
-            //    isValid = !string.IsNullOrEmpty(api.AccessToken);
-            //}
-            //catch
-            //{
-            //}
+            Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", "trying to authorize..."));
+
+            var task = Task.Run(() =>
+            {
+                var api = new VkApi();
+                api.Authorize(AppId, Login, Password, VkToolkit.Enums.Settings.Audio);
+                isValid = !string.IsNullOrEmpty(api.AccessToken);
+
+                Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", isValid ? "Success" : "Failed"));
+            });
+
+            task.ContinueWith((t) =>
+            {
+                Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", isValid ? "Success" : "Failed"));
+            }, TaskContinuationOptions.NotOnFaulted);
+
+            task.ContinueWith((t) =>
+            {
+                Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", string.Format("Exception occured: {0}.", t.Exception.Message)));
+            }, TaskContinuationOptions.OnlyOnFaulted);
         }
 
         public ICommand SelectDataFolderCommand

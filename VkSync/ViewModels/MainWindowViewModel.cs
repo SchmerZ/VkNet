@@ -92,12 +92,6 @@ namespace VkSync.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets or sets a value indicating whether [panel loading].
-        /// </summary>
-        /// <value>
-        /// <c>true</c> if [panel loading]; otherwise, <c>false</c>.
-        /// </value>
         public bool PanelLoading
         {
             get
@@ -124,10 +118,6 @@ namespace VkSync.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets or sets the panel main message.
-        /// </summary>
-        /// <value>The panel main message.</value>
         public string PanelMainMessage
         {
             get
@@ -141,10 +131,6 @@ namespace VkSync.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets or sets the panel sub message.
-        /// </summary>
-        /// <value>The panel sub message.</value>
         public string PanelSubMessage
         {
             get
@@ -158,9 +144,6 @@ namespace VkSync.ViewModels
             }
         }
 
-        /// <summary>
-        /// Gets the panel close command.
-        /// </summary>
         public ICommand PanelCloseCommand
         {
             get
@@ -168,45 +151,6 @@ namespace VkSync.ViewModels
                 return new RelyCommand(() =>
                 {
                     PanelLoading = false;
-                });
-            }
-        }
-
-        /// <summary>
-        /// Gets the show panel command.
-        /// </summary>
-        public ICommand ShowPanelCommand
-        {
-            get
-            {
-                return new RelyCommand(() =>
-                {
-                    PanelLoading = true;
-                });
-            }
-        }
-
-        /// <summary>
-        /// Gets the hide panel command.
-        /// </summary>
-        public ICommand HidePanelCommand
-        {
-            get
-            {
-                return new RelyCommand(() =>
-                {
-                    PanelLoading = false;
-                });
-            }
-        }
-
-        public ICommand NavigateTo
-        {
-            get
-            {
-                return new RelyCommand(() =>
-                {
-                    
                 });
             }
         }
