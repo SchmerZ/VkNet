@@ -23,7 +23,7 @@
             <ColumnDefinition Width="50" />
         </Grid.ColumnDefinitions>
 
-        <Button Style="{StaticResource BtnPlayPause}" HorizontalAlignment="Left" />
+        <ToggleButton Style="{StaticResource BtnPlayPause}" HorizontalAlignment="Left" />
 
         <StackPanel Grid.Column="1" Orientation="Horizontal">
             <TextBlock Margin="2,0,0,0" Foreground="#2B587A" Style="{StaticResource TitleStyle}"
@@ -39,5 +39,9 @@
         <Slider Style="{StaticResource VkVolumeSlider}" AutoToolTipPlacement="TopLeft" Grid.Column="2" 
                 Minimum="0" Maximum="100" Value="25" 
                 VerticalAlignment="Bottom" IsMoveToPointEnabled="True" />
+        
+        <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="4,0,0,0">
+            <Button Style="{StaticResource BtnDownloadStyle}" ToolTip="Download" />
+        </StackPanel>
     </Grid>
 </UserControl>

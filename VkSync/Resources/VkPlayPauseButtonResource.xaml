@@ -34,43 +34,115 @@
         </GradientBrush.GradientStops>
     </LinearGradientBrush>
 
-    <!-- Button -->
-    <Style TargetType="Button" x:Key="BtnPlayPause">
+    <!-- ToggleButton -->
+    <ControlTemplate x:Key="BtnPlayTemplate" TargetType="{x:Type ToggleButton}">
+        <Image x:Name="Image">
+            <Image.Source>
+                <CroppedBitmap x:Name="CroppedBitmap" Source="../Images/audio_icons.png" SourceRect="0,25,22,22" />
+            </Image.Source>
+        </Image>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="Image" Property="Source">
+                    <Setter.Value>
+                        <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="24,25,22,22" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="true">
+                <Setter TargetName="Image" Property="Source">
+                    <Setter.Value>
+                        <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="48,25,22,22" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BtnPauseTemplate" TargetType="{x:Type ToggleButton}">
+        <Image x:Name="Image">
+            <Image.Source>
+                <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="72,25,22,22" />
+            </Image.Source>
+        </Image>
+
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter TargetName="Image" Property="Source">
+                    <Setter.Value>
+                        <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="96,25,22,22" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="true">
+                <Setter TargetName="Image" Property="Source">
+                    <Setter.Value>
+                        <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="120,25,22,22" />
+                    </Setter.Value>
+                </Setter>
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <Style TargetType="ToggleButton" x:Key="BtnPlayPause">
         <Setter Property="SnapsToDevicePixels" Value="true"/>
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
         <Setter Property="MinHeight" Value="22"/>
+        <Setter Property="Template" Value="{StaticResource BtnPlayTemplate}"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Template" Value="{StaticResource BtnPauseTemplate}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Download Button -->
+    <ControlTemplate x:Key="BtnDowbloadTemplate" TargetType="{x:Type Button}">
+        <Image x:Name="Image">
+            <Image.Source>
+                <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="80,52,11,11" />
+            </Image.Source>
+        </Image>
+    </ControlTemplate>
+
+    <Style TargetType="Button" x:Key="BtnDownloadStyle">
+        <Setter Property="SnapsToDevicePixels" Value="true"/>
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
+        <Setter Property="Width" Value="11"/>
+        <Setter Property="Template" Value="{StaticResource BtnDowbloadTemplate}"/>
+    </Style>
+
+    <Style TargetType="ToolTip">
+        <Setter Property="OverridesDefaultStyle" Value="true"/>
+        <Setter Property="HasDropShadow" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <!--<Border x:Name="Border"  
-                        CornerRadius="2" BorderThickness="1"
-                        Background="{StaticResource NormalBrush}"
-                        BorderBrush="{StaticResource NormalBorderBrush}">-->
-                       <Image x:Name="Image">
-                           <Image.Source>
-                                <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="0,25,22,22" />
-                           </Image.Source>
-                       </Image>
-                    <!--</Border>-->
-
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="Image" Property="Source">
-                                <Setter.Value>
-                                    <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="24,25,22,22" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                        
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter TargetName="Image" Property="Source">
-                                <Setter.Value>
-                                    <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="48,25,22,22" />
-                                </Setter.Value>
-                            </Setter>
-                        </Trigger>
-                    </ControlTemplate.Triggers>
+                <ControlTemplate TargetType="ToolTip">
+                    <Border CornerRadius="7" HorizontalAlignment="Center" VerticalAlignment="Top" Padding="5" BorderThickness="3,3,3,3">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#CF181818" Offset="0"/>
+                                <GradientStop Color="#BE1C1C1C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.BorderBrush>
+                            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                                <GradientStop Color="#80FFFFFF" Offset="0"/>
+                                <GradientStop Color="#7FFFFFFF" Offset="1"/>
+                                <GradientStop Color="#FFFFF18D" Offset="0.344"/>
+                                <GradientStop Color="#FFFFF4AB" Offset="0.647"/>
+                            </LinearGradientBrush>
+                        </Border.BorderBrush>
+                        <StackPanel>
+                            <TextBlock FontFamily="Tahoma" FontSize="11" Text="{TemplateBinding Content}" Foreground="#FFFFFFFF" />
+                        </StackPanel>
+                    </Border>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
