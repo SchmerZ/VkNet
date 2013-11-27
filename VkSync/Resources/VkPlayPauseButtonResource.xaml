@@ -102,7 +102,15 @@
     </Style>
 
     <!-- Download Button -->
-    <ControlTemplate x:Key="BtnDowbloadTemplate" TargetType="{x:Type Button}">
+    <ControlTemplate x:Key="BtnDisabledDownloadTemplate" TargetType="{x:Type Button}">
+        <Image x:Name="Image">
+            <Image.Source>
+                <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="94,52,11,11" />
+            </Image.Source>
+        </Image>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="BtnActiveDownloadTemplate" TargetType="{x:Type Button}">
         <Image x:Name="Image">
             <Image.Source>
                 <CroppedBitmap Source="../Images/audio_icons.png" SourceRect="80,52,11,11" />
@@ -115,7 +123,13 @@
         <Setter Property="OverridesDefaultStyle" Value="true"/>
         <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}"/>
         <Setter Property="Width" Value="11"/>
-        <Setter Property="Template" Value="{StaticResource BtnDowbloadTemplate}"/>
+        <Setter Property="Template" Value="{StaticResource BtnDisabledDownloadTemplate}"/>
+
+        <Style.Triggers>
+            <Trigger Property="IsEnabled" Value="True">
+                <Setter Property="Template" Value="{StaticResource BtnActiveDownloadTemplate}" />
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
     <Style TargetType="ToolTip">

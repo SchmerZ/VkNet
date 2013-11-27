@@ -1,5 +1,8 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+
+using VkSync.Commands;
 using VkToolkit.Model;
 
 namespace VkSync.Controls
@@ -11,6 +14,8 @@ namespace VkSync.Controls
         public VkPlayer()
         {
             InitializeComponent();
+
+            DownloadButton.Command = new RelyCommand(OnDownloadSelectedAudioClick, () => SelectedAudio != null);
         }
 
         #endregion
@@ -18,6 +23,9 @@ namespace VkSync.Controls
         public static readonly DependencyProperty SelectedAudioProperty =
             DependencyProperty.Register("SelectedAudio", typeof (Audio), typeof (VkPlayer),
                 new PropertyMetadata(OnSelectedAudioChanged));
+
+        public static readonly DependencyProperty DownloadSelectedAudioCommandProperty =
+            DependencyProperty.Register("DownloadSelectedAudioCommand", typeof (ICommand), typeof (VkPlayer));
 
         public Audio SelectedAudio
         {
@@ -29,6 +37,18 @@ namespace VkSync.Controls
         {
             var player = (VkPlayer) sender;
             player.SeekSlider.Value = 0;
+        }
+
+        public ICommand DownloadSelectedAudioCommand
+        {
+            get { return (ICommand)GetValue(DownloadSelectedAudioCommandProperty); }
+            set { SetValue(DownloadSelectedAudioCommandProperty, value); }
+        }
+
+        private void OnDownloadSelectedAudioClick()
+        {
+            if (DownloadSelectedAudioCommand != null)
+                DownloadSelectedAudioCommand.Execute(SelectedAudio);
         }
     }
 }

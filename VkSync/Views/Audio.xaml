@@ -46,15 +46,6 @@
                     </DataGridCheckBoxColumn.CellStyle>
                 </DataGridCheckBoxColumn>
 
-                <DataGridTemplateColumn Width="17">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <!--<Button Style="{StaticResource BtnPlayPause}" HorizontalAlignment="Left" Width="17" Height="14" />-->
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTextColumn Header="Id" Binding="{Binding Audio.Id}" IsReadOnly="True"/>
                 <DataGridTextColumn Header="Artist" Binding="{Binding Audio.Artist}" />
                 <DataGridTextColumn Header="Title" Binding="{Binding Audio.Title}" />
 

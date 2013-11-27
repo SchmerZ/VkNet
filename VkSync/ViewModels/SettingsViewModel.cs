@@ -168,22 +168,22 @@ namespace VkSync.ViewModels
 
         private void OnTestAuthorizationCommand()
         {
-            var isValid = false;
-
             Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", "trying to authorize..."));
 
             var task = Task.Run(() =>
             {
                 var api = new VkApi();
                 api.Authorize(AppId, Login, Password, VkToolkit.Enums.Settings.Audio);
-                isValid = !string.IsNullOrEmpty(api.AccessToken);
+                var isValid = !string.IsNullOrEmpty(api.AccessToken);
 
                 Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", isValid ? "Success" : "Failed"));
+
+                return isValid;
             });
 
             task.ContinueWith((t) =>
             {
-                Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", isValid ? "Success" : "Failed"));
+                Mediator.Notify(ViewModelMessageType.Notification, new StringPair("Authorization test", t.Result ? "Success" : "Failed"));
             }, TaskContinuationOptions.NotOnFaulted);
 
             task.ContinueWith((t) =>
