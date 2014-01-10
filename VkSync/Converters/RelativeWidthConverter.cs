@@ -7,7 +7,13 @@ namespace VkSync.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            return ((Double)values[0] * (Double)values[1]) / 100.0;
+            var actualWidth = (double) values[0];
+            var value = (double)values[1];
+            var maxValue = (double)values[2];
+
+            var complete = value / maxValue;
+
+            return (actualWidth * complete);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)

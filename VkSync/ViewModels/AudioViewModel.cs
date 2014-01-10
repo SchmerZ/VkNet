@@ -7,7 +7,6 @@ using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.Windows.Input;
 using NAudio.Wave;
 using VkSync.Commands;
@@ -61,7 +60,7 @@ namespace VkSync.ViewModels
         }
 
         #endregion
-        
+
         #region Properties
 
         private ObservableCollection<AudioDataItemViewModel> _audioData = null;
@@ -83,6 +82,37 @@ namespace VkSync.ViewModels
         {
             get;
             set;
+        }
+
+        private double _volume = 1.0;
+        public double Volume
+        {
+            get
+            {
+                return _volume;
+            }
+            set
+            {
+                _volume = value / 100;
+
+                if (_volumeProvider != null)
+                    _volumeProvider.Volume = (float) _volume;
+            }
+        }
+
+        private int _currentPlaybackPosition;
+
+        public int CurrentPlaybackPosition
+        {
+            get
+            {
+                return _currentPlaybackPosition;
+            }
+            set
+            {
+                _currentPlaybackPosition = value;
+                OnPropertyChanged("CurrentPlaybackPosition");
+            }
         }
 
         #endregion
@@ -128,7 +158,7 @@ namespace VkSync.ViewModels
                 .ContinueWith((t) => Mediator.Notify(ViewModelMessageType.Working, false));
         }
 
-        private IEnumerable<VkToolkit.Model.Audio> GetAudio()
+        private IEnumerable<Audio> GetAudio()
         {
             var settings = VkSyncContext.Settings;
 
@@ -225,7 +255,7 @@ namespace VkSync.ViewModels
                         else
                         {
                             Mp3Frame frame = null;
-                            
+
                             try
                             {
                                 frame = Mp3Frame.LoadFromStream(readFullyStream);
@@ -266,11 +296,11 @@ namespace VkSync.ViewModels
                             _bufferedWaveProvider.AddSamples(buffer, 0, decompressed);
                         }
 
-                    } 
+                    }
                     while (_playbackState != StreamingPlaybackState.Stopped);
-                    
+
                     Debug.WriteLine("Exiting");
-                    
+
                     // was doing this in a finally block, but for some reason
                     // we are hanging on response stream .Dispose so never get there
                     decompressor.Dispose();
@@ -279,9 +309,7 @@ namespace VkSync.ViewModels
             finally
             {
                 if (decompressor != null)
-                {
                     decompressor.Dispose();
-                }
             }
         }
 
@@ -301,9 +329,7 @@ namespace VkSync.ViewModels
             if (_playbackState != StreamingPlaybackState.Stopped)
             {
                 if (!_fullyDownloaded)
-                {
                     _webRequest.Abort();
-                }
 
                 _playbackState = StreamingPlaybackState.Stopped;
 
@@ -414,10 +440,13 @@ namespace VkSync.ViewModels
                 {
                     Debug.WriteLine("Creating WaveOut Device");
                     _wavePlayer = CreateWaveOut();
-                   // _wavePlayer.PlaybackStopped += waveOut_PlaybackStopped;
+                    // _wavePlayer.PlaybackStopped += waveOut_PlaybackStopped;
 
-                    _volumeProvider = new VolumeWaveProvider16(_bufferedWaveProvider);
-                    _volumeProvider.Volume = 1;// this.volumeSlider1.Volume;
+                    _volumeProvider = new VolumeWaveProvider16(_bufferedWaveProvider)
+                    {
+                        Volume = (float) Volume
+                    };
+
                     _wavePlayer.Init(_volumeProvider);
                     //progressBarBuffer.Maximum = (int)bufferedWaveProvider.BufferDuration.TotalMilliseconds;
                 }
@@ -425,6 +454,7 @@ namespace VkSync.ViewModels
                 {
                     var bufferedSeconds = _bufferedWaveProvider.BufferedDuration.TotalSeconds;
                     //ShowBufferState(bufferedSeconds);
+
                     // make it stutter less if we buffer up a decent amount before playing
                     if (bufferedSeconds < 0.5 && _playbackState == StreamingPlaybackState.Playing && !_fullyDownloaded)
                     {
@@ -436,10 +466,21 @@ namespace VkSync.ViewModels
                     else if (bufferedSeconds > 4 && _playbackState == StreamingPlaybackState.Buffering)
                     {
                         _wavePlayer.Play();
-                        
+
                         Debug.WriteLine(String.Format("Started playing, waveOut.PlaybackState={0}", _wavePlayer.PlaybackState));
-                        
+
                         _playbackState = StreamingPlaybackState.Playing;
+                    }
+                    else if (_playbackState == StreamingPlaybackState.Playing)
+                    {
+                        var position = ((WaveOut)_wavePlayer).GetPosition();
+                        var bytesPerSecond = _bufferedWaveProvider.WaveFormat.AverageBytesPerSecond;
+
+                        var gone = position / bytesPerSecond;
+
+                        var currentTime = TimeSpan.FromSeconds(gone);
+
+                        CurrentPlaybackPosition = (int)gone;
                     }
                     else if (_fullyDownloaded && bufferedSeconds == 0)
                     {
@@ -447,14 +488,13 @@ namespace VkSync.ViewModels
                         StopPlayback();
                     }
                 }
-
             }
         }
 
         private IWavePlayer CreateWaveOut()
         {
-            //return new WaveOut();
-            return new DirectSoundOut();
+            return new WaveOut();
+            //return new DirectSoundOut();
         }
 
         #endregion

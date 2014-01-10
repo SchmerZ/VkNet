@@ -33,11 +33,11 @@
                        Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=SelectedAudio.Title}" />
         </StackPanel>
 
-        <Slider Name="SeekSlider" Style="{StaticResource VkVolumeSlider}" Grid.Column="1" Minimum="0" Maximum="100" Value="77" 
+        <Slider Name="SeekSlider" Style="{StaticResource VkVolumeSlider}" Grid.Column="1" Minimum="0" Maximum="100"
                 VerticalAlignment="Bottom" IsMoveToPointEnabled="True" x:FieldModifier="private" AutoToolTipPlacement="TopLeft" />
         
-        <Slider Style="{StaticResource VkVolumeSlider}" AutoToolTipPlacement="TopLeft" Grid.Column="2" 
-                Minimum="0" Maximum="100" Value="25" 
+        <Slider Name="VolumeSlider" x:FieldModifier="private" Style="{StaticResource VkVolumeSlider}" AutoToolTipPlacement="TopLeft" Grid.Column="2" 
+                Minimum="0" Maximum="100" Value="100" 
                 VerticalAlignment="Bottom" IsMoveToPointEnabled="True" />
         
         <StackPanel Grid.Column="3" Orientation="Horizontal" Margin="4,0,0,0">
