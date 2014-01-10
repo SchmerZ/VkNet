@@ -39,7 +39,7 @@
     </Win32Resource>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>1385488387_175377.ico</ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationFramework.Classic" />
@@ -66,14 +66,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Commands\BaseRelyCommand.cs" />
     <Compile Include="Commands\CommandManagerHelper.cs" />
     <Compile Include="Commands\RelyCommand.cs" />
+    <Compile Include="Commands\RelyParameterCommand.cs" />
     <Compile Include="Controls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\LoadingPanel.xaml.cs">
       <DependentUpon>LoadingPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\PlayPauseCommandArgs.cs" />
     <Compile Include="Controls\VkPlayer.xaml.cs">
       <DependentUpon>VkPlayer.xaml</DependentUpon>
     </Compile>
@@ -91,6 +94,7 @@
     <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\ViewModelMessageType.cs" />
     <Compile Include="Serializers\SettingsSerializer.cs" />
+    <Compile Include="Streams\ReadFullyStream.cs" />
     <Compile Include="Tasks\LimitedConcurrencyLevelTaskScheduler.cs" />
     <Compile Include="Validation\RangeValidationRule.cs" />
     <Compile Include="Validation\ValidationHandler.cs" />
@@ -182,13 +186,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NAudio\NAudio.csproj">
+      <Project>{DA4F02E3-0B5E-42CD-B8D9-5583FA51D66E}</Project>
+      <Name>NAudio</Name>
+    </ProjectReference>
     <ProjectReference Include="..\VkToolkit\VkToolkit.csproj">
       <Project>{8b031a92-84d4-4418-8551-18f1afeecc6c}</Project>
       <Name>VkToolkit</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="1385488387_175377.ico" />
+    <Resource Include="icon.ico" />
     <Content Include="Files\settings.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,6 +17,7 @@ namespace VkSync.Controls
             InitializeComponent();
 
             DownloadButton.Command = new RelyCommand(OnDownloadSelectedAudioClick, () => SelectedAudio != null);
+            PlayPauseButton.Command = new RelyCommand(OnPlayPauseClick, () => SelectedAudio != null);
         }
 
         #endregion
@@ -26,6 +28,9 @@ namespace VkSync.Controls
 
         public static readonly DependencyProperty DownloadSelectedAudioCommandProperty =
             DependencyProperty.Register("DownloadSelectedAudioCommand", typeof (ICommand), typeof (VkPlayer));
+
+        public static readonly DependencyProperty PlayPauseCommandProperty =
+            DependencyProperty.Register("PlayPauseCommand", typeof(ICommand), typeof(VkPlayer));
 
         public Audio SelectedAudio
         {
@@ -49,6 +54,28 @@ namespace VkSync.Controls
         {
             if (DownloadSelectedAudioCommand != null)
                 DownloadSelectedAudioCommand.Execute(SelectedAudio);
+        }
+
+        public ICommand PlayPauseCommand
+        {
+            get { return (ICommand)GetValue(PlayPauseCommandProperty); }
+            set { SetValue(PlayPauseCommandProperty, value); }
+        }
+
+        private void OnPlayPauseClick()
+        {
+            if (PlayPauseCommand != null)
+            {
+                var args = new PlayPauseCommandArgs
+                    {
+                        Status = PlayPauseButton.IsChecked.GetValueOrDefault()
+                                     ? PlaybackState.Playing
+                                     : PlaybackState.Paused,
+                        Audio = SelectedAudio
+                    };
+
+                PlayPauseCommand.Execute(args);
+            }
         }
     }
 }

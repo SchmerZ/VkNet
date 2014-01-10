@@ -13,8 +13,11 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <DockPanel>
-        <controls:VkPlayer DockPanel.Dock="Top" SelectedAudio="{Binding ElementName=dgAudio, Path=SelectedItem.Audio}" />
+        <controls:VkPlayer DockPanel.Dock="Top" 
+                           SelectedAudio="{Binding ElementName=dgAudio, Path=SelectedItem.Audio}"
+                           PlayPauseCommand="{Binding PlayPauseCommand}"/>
 
         <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
