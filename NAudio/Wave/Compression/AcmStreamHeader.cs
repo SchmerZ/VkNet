@@ -124,5 +124,4 @@ namespace NAudio.Wave.Compression
         }
         #endregion
     }
-
 }

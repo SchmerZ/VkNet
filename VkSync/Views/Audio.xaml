@@ -19,7 +19,7 @@
                            SelectedAudio="{Binding ElementName=dgAudio, Path=SelectedItem.Audio}"
                            PlayPauseCommand="{Binding PlayPauseCommand}" 
                            Volume="{Binding Volume, Mode=TwoWay}"
-                           Position="{Binding CurrentPlaybackPosition, Mode=TwoWay}"/>
+                           Position="{Binding CurrentPlaybackPosition, Mode=TwoWay}" />
 
         <Grid DockPanel.Dock="Bottom" Margin="0,4,0,0">
             <Grid.ColumnDefinitions>
@@ -40,6 +40,7 @@
                   SelectionUnit="FullRow"
                   CanUserDeleteRows="False" CanUserAddRows="False" 
                   AutoGenerateColumns="False"
+                  SelectedItem="{Binding SelectedAudioViewModel}"
                   ItemsSource="{Binding AudioData}">
 
             <DataGrid.Columns>

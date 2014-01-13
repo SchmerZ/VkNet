@@ -73,6 +73,7 @@ namespace VkSync.Controls
             var player = (VkPlayer)sender;
             var selectedAudio = (Audio)args.NewValue;
 
+            player.PlayPauseButton.IsChecked = false;
             player.SeekSlider.Maximum = selectedAudio == null ? 0 : selectedAudio.Duration;
             player.SeekSlider.Value = 0;
         }

@@ -23,7 +23,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace VkSync.ViewModels
 {
-    public class AudioViewModel : MediatorViewModel
+    public class AudioViewModel : MediatorViewModel, IDisposable
     {
         private enum StreamingPlaybackState
         {
@@ -64,7 +64,6 @@ namespace VkSync.ViewModels
         #region Properties
 
         private ObservableCollection<AudioDataItemViewModel> _audioData = null;
-
         public ObservableCollection<AudioDataItemViewModel> AudioData
         {
             get
@@ -101,7 +100,6 @@ namespace VkSync.ViewModels
         }
 
         private int _currentPlaybackPosition;
-
         public int CurrentPlaybackPosition
         {
             get
@@ -112,6 +110,22 @@ namespace VkSync.ViewModels
             {
                 _currentPlaybackPosition = value;
                 OnPropertyChanged("CurrentPlaybackPosition");
+            }
+        }
+
+        private AudioDataItemViewModel _selectedAudioViewModel;
+        public AudioDataItemViewModel SelectedAudioViewModel
+        {
+            get
+            {
+                return _selectedAudioViewModel;
+            }
+            set
+            {
+                _selectedAudioViewModel = value;
+                OnPropertyChanged("SelectedAudioViewModel");
+
+                StopPlayback();
             }
         }
 
@@ -232,6 +246,7 @@ namespace VkSync.ViewModels
                 {
                     //ShowError(e.Message);
                 }
+
                 return;
             }
 
@@ -344,7 +359,7 @@ namespace VkSync.ViewModels
                 _timer.Enabled = false;
 
                 // n.b. streaming thread may not yet have exited
-                Thread.Sleep(500);
+                //Thread.Sleep(500);
                 //ShowBufferState(0);
             }
         }
@@ -498,5 +513,19 @@ namespace VkSync.ViewModels
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        private void Dispose(bool disposing)
+        {
+            StopPlayback();
+
+            if (disposing)
+                Thread.Sleep(500);
+        }
     }
 }
